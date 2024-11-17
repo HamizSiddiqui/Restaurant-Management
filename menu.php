@@ -10,17 +10,19 @@
 
     <style>
     .bgcolor {
-        background-color: #000428;
-
+        background-image: url(https://images.pexels.com/photos/326333/pexels-photo-326333.jpeg);
+        background-position: center;
+        background-size: cover;
+        background-repeat: none;
     }
 
     .navcolor {
         background-color: #004e92;
     }
 
-    .w {
-        background-color: whitesmoke;
-    }
+    .wrapper{ 
+        background-color: rgba(0, 0, 0, 0.566);
+      }
     </style>
 
 
@@ -46,29 +48,26 @@
     <!-- navbar end -->
 
 
-    <!-- Category Slider Start -->
-    <section class="sec-m1">
-        <nav class="navbar navcolor">
+
+    <!-- Cards Start -->
+    <section class="sec-m2 bgcolor" style="min-height: 600px;">
+
+        <nav class="navbar">
             <form class="container-fluid justify-content-center ">
 
                 <?php 
             $sql="SELECT * FROM `categories`";
             $result=mysqli_query($conn,$sql);
             while($row=mysqli_fetch_assoc($result)){
-                echo '<button class="btn btn-sm btn-outline-light p-2 mx-4" type="button">'. $row['Category_name'] .'</button>';
+                echo '<button class="btn mt-3 btn-sm btn-outline-light py-2 px-4 mx-4" type="button">'. $row['Category_name'] .'</button>';
             }
                     
         ?>
             </form>
         </nav>
-    </section>
-    <!-- Category Slider End -->
 
 
 
-
-    <!-- Cards Start -->
-    <section class="sec-m2 bgcolor" style="min-height: 600px;">
         <div class="container">
             <div class="row pt-5">
                 <?php 

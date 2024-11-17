@@ -130,11 +130,11 @@ if (isset($error_message)) {
       <div class="col"> 
         <h1>Admin Portal</h1>
         <br>
-        <div class="btn-group px-3" role="group" aria-label="Basic outlined example">
-          <button type="button" class="btn btn-outline-secondary">Menu</button>
-          <button type="button" class="btn btn-outline-secondary">Reservation</button>
-          <button type="button" class="btn btn-outline-secondary">Orders</button>
-          <button type="button" class="btn btn-outline-secondary">Inventory</button>
+        <div class="btn-group px-3 " role="group" aria-label="Basic outlined example">
+          <button type="button" class="btn text-light btn-outline-secondary">Menu</button>
+          <button type="button" class="btn text-light btn-outline-secondary">Reservation</button>
+          <button type="button" class="btn text-light btn-outline-secondary">Orders</button>
+          <button type="button" class="btn text-light btn-outline-secondary">Inventory</button>
         </div>              
       </div>
 
