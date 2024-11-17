@@ -37,135 +37,168 @@
 <?php
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_GET['cat_id'])) {
-            $id=$_GET['cat_id'];  
-            $newid=$_POST['category_id'];
-            $newname=$_POST['category_name'];
+            $id = $_GET['cat_id'];
+            $newid = $_POST['category_id'];
+            $newname = $_POST['category_name'];
 
-            $sql="UPDATE `categories` SET `Category_id` = '$newid', `Category_name` = '$newname' WHERE `Category_id` ='$id' ";
-            $result=mysqli_query($conn,$sql);
-            if($result){
-                header('Location: /restaurants2/Restaurant-Management/admin.php');
-            }else{
-
+            $sql_check_category = "SELECT * FROM `categories` WHERE `Category_id` = '$newid' OR `Category_name` = '$newname'";
+            $result_check_category = mysqli_query($conn, $sql_check_category);
+            if (mysqli_num_rows($result_check_category) > 1) {
+                echo '<div class="alert alert-danger">Category ID or Name already exists!</div>';
+            } else {
+                $sql = "UPDATE `categories` SET `Category_id` = '$newid', `Category_name` = '$newname' WHERE `Category_id` = '$id'";
+                $result = mysqli_query($conn, $sql);
+                if ($result) {
+                    header('Location: /restaurants2/Restaurant-Management/admin.php');
+                } else {
+                    echo '<div class="alert alert-danger">Error updating category.</div>';
+                }
             }
-            
-        }elseif (isset($_GET['item_id'])){
-            $id=$_GET['item_id'];  
-            $newid=$_POST['it_id'];
-            $newimageurl=$_POST['item_image'];
-            $newname=$_POST['item_name'];
-            $newdesc=$_POST['item_description'];
-            $newprice=$_POST['price'];
-            $newcatid=$_POST['cat_id'];
-            
-            $sql2 = "UPDATE `items` SET `Item_id` = '$newid', `Item_image` = '$newimageurl', `Item_name` = '$newname', `Item_description` = '$newdesc', `Price` = '$newprice', `cat_id` = '$newcatid' WHERE `Item_id` = '$id'";
-            $result=mysqli_query($conn,$sql2);
-            if($result){
-                header('Location: /restaurants2/Restaurant-Management/admin.php');
-            }else{
+        } elseif (isset($_GET['item_id'])) {
+            $id = $_GET['item_id'];
+            $newid = $_POST['it_id'];
+            $newimageurl = $_POST['item_image'];
+            $newname = $_POST['item_name'];
+            $newdesc = $_POST['item_description'];
+            $newprice = $_POST['price'];
+            $newcatid = $_POST['cat_id'];
 
+            $sql_check_item = "SELECT * FROM `items` WHERE `Item_id` = '$newid' OR `Item_name` = '$newname'";
+            $result_check_item = mysqli_query($conn, $sql_check_item);
+            if (mysqli_num_rows($result_check_item) > 1) {
+                echo '<div class="alert alert-danger">Item ID or Name already exists!</div>';
+            } else {
+                $sql2 = "UPDATE `items` SET `Item_id` = '$newid', `Item_image` = '$newimageurl', `Item_name` = '$newname', `Item_description` = '$newdesc', `Price` = '$newprice', `cat_id` = '$newcatid' WHERE `Item_id` = '$id'";
+                $result = mysqli_query($conn, $sql2);
+                if ($result) {
+                    header('Location: /restaurants2/Restaurant-Management/admin.php');
+                } else {
+                    echo '<div class="alert alert-danger">Error updating item.</div>';
+                }
             }
         }
-    }   
+    }
 ?>
+<!-- Update Query ends-->
 
-<!--  Update Query ends-->
+
+
+<!-- Edit portal Starts -->
     <section class="bg-color text-light text-center" style="height: 695px;">
         <div class="container">
             <div class="row">
                 <div class="col">
                     <h1 class="pt-4"> Edit Portal</h1>
                     <!-- Category edit starts -->
-                    <?php if(isset($_GET['cat_id'])): ?>
-                    <form action="edit.php?cat_id=<?php echo $_GET['cat_id']; ?>" method="post">
-                    <table class="table table-dark table-striped-columns">
-                        <table class="table">
-                            <tbody>
-                                <?php 
-                                    $id=$_GET['cat_id'];
-                                    $sql="SELECT * FROM `categories` where Category_id=$id";
-                                    $result=mysqli_query($conn,$sql);
-                                    while($row=mysqli_fetch_assoc($result)){
-                                        echo'
-                                        <tr>
-                                            <th>Category ID</th>
-                                            <td><textarea class="form-control" id="floatingTextarea2" name="category_id"
-                                                    style="height: 60px">'.$row['Category_id'].'</textarea></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Category Name</th>
-                                            <td><textarea class="form-control" id="floatingTextarea2" name="category_name"
-                                                    style="height: 60px">'.$row['Category_name'].'</textarea></td>
-                                        </tr>
-                                        ';
-                                    }
-                                ?>
-                            </tbody>
-                            <br>
-                        </table>
-                        <button type="submit" class="btn btn-secondary text-light btn-outline-success px-4">Save
-                            Changes</button>
-                        <a href="admin.php"><button type="button"
-                            class="btn btn-secondary text-light btn-outline-success px-5">Cancel</button></a>
-                    </table>
-                    </form>
-                    <!-- Category edit ends -->
+                    <?php if (isset($_GET['cat_id'])): ?>
+                        <form action="edit.php?cat_id=<?php echo $_GET['cat_id']; ?>" method="post">
+                            <?php if (isset($error)): ?>
+                                <div class="alert alert-danger" role="alert">
+                                    <?php echo $error; ?>
+                                </div>
+                            <?php endif; ?>
+                            <table class="table table-light table-striped-columns">
+                                <tbody>
+                                    <?php 
+                                        $id = $_GET['cat_id'];
+                                        $sql = "SELECT * FROM `categories` where Category_id = $id";
+                                        $result = mysqli_query($conn, $sql);
+                                        while ($row = mysqli_fetch_assoc($result)) {
+                                            echo '
+                                            <tr>
+                                                <th>Category ID</th>
+                                                <td><textarea class="form-control" name="category_id" style="height: 60px">' . $row['Category_id'] . '</textarea></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Category Name</th>
+                                                <td><textarea class="form-control" name="category_name" style="height: 60px">' . $row['Category_name'] . '</textarea></td>
+                                            </tr>
+                                            ';
+                                        }
+                                    ?>
+                                </tbody>
+                            </table>
+                            <button type="submit" class="btn btn-secondary text-light btn-outline-success px-4">Save Changes</button>
+                            <a href="admin.php"><button type="button" class="btn btn-secondary text-light btn-outline-success px-5">Cancel</button></a>
+                        </form>
+                        <?php endif; ?>  
+                    <!-- Category edit ends -->                        
                     
                     
-                    <!-- items edit starts -->
-                    <?php elseif(isset($_GET['item_id'])): ?>
-                    <form action="edit.php?item_id=<?php echo $_GET['item_id']; ?>" method="post">
-                    <table class="table table-dark table-striped-columns">
-                        <table class="table">
-                            <tbody>
-                                <?php 
-                                    $id=$_GET['item_id'];
-                                    $sql="SELECT * FROM `items` where Item_id=$id";
-                                    $result=mysqli_query($conn,$sql);
-                                    while($row=mysqli_fetch_assoc($result)){
-                                        echo'
-                                        <tr>
-                                            <th>ID</th>
-                                            <td><textarea class="form-control" id="floatingTextarea2" name="it_id" style="height: 60px">'.$row['Item_id'].'</textarea></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Image URL</th>
-                                            <td><textarea class="form-control" id="floatingTextarea2" name="item_image" style="height: 60px">'.$row['Item_image'].'</textarea></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Name</th>
-                                            <td><textarea class="form-control" id="floatingTextarea2" name="item_name" style="height: 60px">'.$row['Item_name'].'</textarea></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Description</th>
-                                            <td><textarea class="form-control" id="floatingTextarea2" name="item_description" style="height: 60px">'.$row['Item_description'].'</textarea></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Price</th>
-                                            <td><textarea class="form-control" id="floatingTextarea2" name="price" style="height: 60px">'.$row['Price'].'</textarea></td>
-                                        </tr>
-                                        <tr>
-                                            <th>Category id</th>
-                                            <td><textarea class="form-control" id="floatingTextarea2" name="cat_id" style="height: 60px">'.$row['cat_id'].'</textarea></td>
-                                        </tr>
-                                        ';
-                                    }
-                                ?>
-                            </tbody>
-                            <br>
-                        </table>
-                        <button type="submit" class="btn btn-secondary text-light btn-outline-success px-4">Save
-                            Changes</button>
-                        <a href="admin.php"><button type="button"
-                            class="btn btn-secondary text-light btn-outline-success px-5">Cancel</button></a>
-                    </table>
-                    </form>
-                    <!-- items edit ends --> 
-                    <?php endif; ?> 
+                    <!-- Item edit starts -->
+                    <?php if (isset($_GET['item_id'])): ?>
+                        <form action="edit.php?item_id=<?php echo $_GET['item_id']; ?>" method="post">
+                            <?php if (isset($error_message)): ?>
+                                <div class="alert alert-danger" role="alert">
+                                    <?php echo $error_message; ?>
+                                </div>
+                            <?php endif; ?>
+                            <table class="table table-light table-striped-columns">
+                                <tbody>
+                                    <?php
+                                        $id = $_GET['item_id'];
+                                        $sql = "SELECT * FROM `items` WHERE Item_id = $id";
+                                        $result = mysqli_query($conn, $sql);
+                                        while ($row = mysqli_fetch_assoc($result)) {
+                                            echo '
+                                            <tr>
+                                                <th>Item ID</th>
+                                                <td><textarea class="form-control" name="it_id" style="height: 60px">' . $row['Item_id'] . '</textarea></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Item Image URL</th>
+                                                <td><textarea class="form-control" name="item_image" style="height: 60px">' . $row['Item_image'] . '</textarea></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Item Name</th>
+                                                <td><textarea class="form-control" name="item_name" style="height: 60px">' . $row['Item_name'] . '</textarea></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Item Description</th>
+                                                <td><textarea class="form-control" name="item_description" style="height: 60px">' . $row['Item_description'] . '</textarea></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Price</th>
+                                                <td><textarea class="form-control" name="price" style="height: 60px">' . $row['Price'] . '</textarea></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Category</th>
+                                                <td>
+                                                    <select class="form-control" name="cat_id" required>';
+
+                                                    // Fetch all categories from the database
+                                                    $sql_categories = "SELECT * FROM `categories`";
+                                                    $result_categories = mysqli_query($conn, $sql_categories);
+
+                                                    // Loop through the categories and create the dropdown options
+                                                    while ($category = mysqli_fetch_assoc($result_categories)) {
+                                                        // Check if the current category is the selected one (match with row's cat_id)
+                                                        $selected = ($category['Category_id'] == $row['cat_id']) ? 'selected' : '';
+
+                                                        // Concatenate the option tag for each category
+                                                        echo '<option value="' . $category['Category_id'] . '" ' . $selected . '>' . $category['Category_name'] . '</option>';
+                                                    }
+
+                                                    // Close the select tag
+                                                    echo '</select>';
+                                                echo '</td>
+                                            </tr>
+                                            ';
+                                        }
+                                    ?>
+                                </tbody>
+                            </table>
+                            <button type="submit" class="btn btn-secondary text-light btn-outline-success px-4">Save Changes</button>
+                            <a href="admin.php"><button type="button" class="btn btn-secondary text-light btn-outline-success px-5">Cancel</button></a>
+                        </form>
+                        <?php endif; ?>
+                    <!-- Item edit ends -->
                 </div>
             </div>
         </div>
     </section>
+    <!-- Edit portal Ends -->
+
 </body>
 
 </html>
