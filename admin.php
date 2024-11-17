@@ -24,6 +24,7 @@
 <?php include '_dbconnect.php'; ?>   
 <!-- Connecting Ends -->
 
+
 <!-- Delete Query Starts -->
 <?php  
 if (isset($_GET['delete_category'])) {
@@ -49,28 +50,25 @@ elseif (isset($_GET['delete_item'])) {
 ?>
 <!-- Delete Query Ends -->
 
+
 <!-- Add Category Query Starts -->
 <?php
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_category'])) {
-    // Get form data
     $category_id = $_POST['category_id'];
     $category_name = $_POST['category_name'];
 
-    // Check if the Category ID already exists
     $sql_check_id = "SELECT * FROM `categories` WHERE Category_id = '$category_id'";
     $result_id = mysqli_query($conn, $sql_check_id);
     if (mysqli_num_rows($result_id) > 0) {
         $error_message = "Category ID already exists.";
     }
 
-    // Check if the Category Name already exists
     $sql_check_name = "SELECT * FROM `categories` WHERE Category_name = '$category_name'";
     $result_name = mysqli_query($conn, $sql_check_name);
     if (mysqli_num_rows($result_name) > 0) {
         $error_message = "Category Name already exists.";
     }
 
-    // If no errors, proceed with adding the category
     if (!isset($error_message)) {
         $sql_insert = "INSERT INTO `categories` (Category_id, Category_name) 
                        VALUES ('$category_id', '$category_name')";
@@ -84,10 +82,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_category'])) {
 ?>
 <!-- Add Category Query Ends -->
 
+
 <!-- Add Item Query Starts -->
 <?php
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_item'])) {
-    // Get form data
     $item_id = $_POST['item_id'];
     $item_name = $_POST['item_name'];
     $item_image = $_POST['item_image'];
@@ -95,26 +93,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_item'])) {
     $price = $_POST['price'];
     $cat_id = $_POST['cat_id'];
 
-    // Check if the Item ID already exists
     $sql_check_id = "SELECT * FROM `items` WHERE Item_id = '$item_id'";
     $result_id = mysqli_query($conn, $sql_check_id);
     if (mysqli_num_rows($result_id) > 0) {
         $error_message = "Item ID already exists.";
     }
 
-    // Check if the Item Name already exists
     $sql_check_name = "SELECT * FROM `items` WHERE Item_name = '$item_name'";
     $result_name = mysqli_query($conn, $sql_check_name);
     if (mysqli_num_rows($result_name) > 0) {
         $error_message = "Item Name already exists.";
     }
 
-    // If no errors, proceed with adding the item
     if (!isset($error_message)) {
         $sql_insert = "INSERT INTO `items` (Item_id, Item_name, Item_image, Item_description, Price, cat_id) 
                        VALUES ('$item_id', '$item_name', '$item_image', '$item_description', '$price', '$cat_id')";
         if (mysqli_query($conn, $sql_insert)) {
-            header("Location: admin.php");  // Redirect after successful insert
+            header("Location: admin.php");  
         } else {
             $error_message = "Error adding item.";
         }
@@ -126,6 +121,7 @@ if (isset($error_message)) {
 }
 ?>
 <!-- Add Item Query Ends -->
+
 
 <!-- Admin Portal Starts -->
 <section class="bg-color text-center" style="min-height: 600px;">
@@ -303,13 +299,10 @@ if (isset($error_message)) {
                         <select class="form-control" id="cat_id" name="cat_id" required>
                             <option value="">Select Category</option>
                             <?php
-                            // Fetch categories from the database
                             $sql_categories = "SELECT * FROM `categories`";
                             $result_categories = mysqli_query($conn, $sql_categories);
 
-                            // Loop through the result and populate the dropdown
                             while ($row = mysqli_fetch_assoc($result_categories)) {
-                                // The option text will show the Category_name, but the value will be Category_id
                                 echo "<option value='" . $row['Category_id'] . "'>" . $row['Category_name'] . "</option>";
                             }
                             ?>

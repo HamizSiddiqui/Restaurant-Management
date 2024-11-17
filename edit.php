@@ -166,20 +166,13 @@
                                                 <td>
                                                     <select class="form-control" name="cat_id" required>';
 
-                                                    // Fetch all categories from the database
                                                     $sql_categories = "SELECT * FROM `categories`";
                                                     $result_categories = mysqli_query($conn, $sql_categories);
 
-                                                    // Loop through the categories and create the dropdown options
                                                     while ($category = mysqli_fetch_assoc($result_categories)) {
-                                                        // Check if the current category is the selected one (match with row's cat_id)
                                                         $selected = ($category['Category_id'] == $row['cat_id']) ? 'selected' : '';
-
-                                                        // Concatenate the option tag for each category
                                                         echo '<option value="' . $category['Category_id'] . '" ' . $selected . '>' . $category['Category_name'] . '</option>';
                                                     }
-
-                                                    // Close the select tag
                                                     echo '</select>';
                                                 echo '</td>
                                             </tr>
