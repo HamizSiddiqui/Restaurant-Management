@@ -36,28 +36,18 @@
 <body> 
 
 <!-- Section 1 start -->
-      <section class="sec-1">
-        <div class="wrapper">
-
-        <!-- Navbar -->
-        <?php include 'navbar.php'; ?>
-        <?php include 'header.php'; ?> 
-
-
-
-        
-      </div>
-      </section>
-
-
-
-
-
+ <section class="sec-1">
+  <div class="wrapper">
+    <!-- Navbar -->
+     <?php include 'navbar.php'; ?>
+     <?php include 'header.php'; ?> 
+  </div>
+  </section>
 <?php include 'loginmodal.php'; ?>
 <?php include 'signupmodal.php'; ?>
-
-
 <!-- Section 1 End -->
+
+
 <section class="sec-2">
     <div class="container-fluid">
       <div class="row justify-content-center align-content-center" style="min-height: 800px;">

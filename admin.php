@@ -63,7 +63,7 @@
                       <tr>
                       <th scope="row">'.$row['Category_id'].'</th>
                       <td>'.$row['Category_name'].'</td>
-                      <td><button type="button" class="btn btn-primary">Edit</button>
+                      <td><a href="edit.php?cat_id='.$row['Category_id'].'"><button type="button" class="btn btn-primary">Edit</button></a>
                       <button type="button" class="btn btn-primary">Delete</button></td>
                       </tr>';
                     }                     
@@ -101,7 +101,7 @@
                       <td>'.$row['Item_description'].'</td>
                       <td>'.$row['Price'].'</td>
                       <td>'.$row['cat_id'].'</td>
-                      <td><button type="button" class="btn btn-primary">Edit</button>
+                      <td><a href="edit.php?item_id='.$row['Item_id'].'"><button type="button" class="btn btn-primary">Edit</button></a>
                           <button type="button" class="btn btn-primary">Delete</button></td>
                     </tr>';
                   }                     

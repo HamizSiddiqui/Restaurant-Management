@@ -14,7 +14,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <!-- Password match Error -->
+        <!-- Password do not match Error -->
         <?php 
           if (isset($_GET['signupsuccess']) && $_GET['signupsuccess'] == "false"){
             echo '
@@ -37,8 +37,8 @@
           }
         ?>
         <!-- signup Form start -->
-        <form action="/restaurant/_handlesignup.php" method="POST">
-        <div class="mb-3">
+        <form action="/restaurants2/Restaurant-Management/_handlesignup.php" method="POST">
+          <div class="mb-3">
             <label for="signupname" class="form-label">Full Name</label>
             <input type="text" class="form-control" id="signupname" name="signupname" aria-describedby="emailHelp">
           </div>
@@ -46,6 +46,14 @@
             <label for="signupemail" class="form-label">Email address</label>
             <input type="email" class="form-control" id="signupemail" name="signupemail" aria-describedby="emailHelp">
             <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+          </div>
+          <div class="mb-3">
+            <label for="contacts" class="form-label">Contact No</label>
+            <input type="text" class="form-control" id="contacts" name="contacts" aria-describedby="emailHelp">
+          </div>
+          <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <input type="text" class="form-control" id="address" name="address" aria-describedby="emailHelp">
           </div>
           <div class="mb-3">
             <label for="signuppassword" class="form-label">Password</label>

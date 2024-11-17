@@ -22,16 +22,16 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             $_SESSION['loggedin'] = true;
             $_SESSION['sno'] = $row['User_id'];
             $_SESSION['username'] = $row['User_name'];
-            header('Location: /restaurant/index.php');
+            header('Location: /restaurants2/Restaurant-Management/index.php');
             exit();
         } else {
            // Reload the modal with the invalid flag set
-            header("Location: /restaurant/index.php?loginerror=true"); 
+            header("Location: /restaurants2/Restaurant-Management/index.php?loginerror=true"); 
             exit();
         }
     } else {
        // Reload the modal with the invalid flag set
-        header("Location: /restaurant/index.php?loginerror=true"); 
+        header("Location: /restaurants2/Restaurant-Management/index.php?loginerror=true"); 
         exit();
     }
     
