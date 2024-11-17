@@ -1,8 +1,8 @@
 
 <style>
     .wrapper{ 
-        background-color: rgba(0, 0, 0, 0.566);
-      }
+        background-color: rgba(0, 0, 0, 0.534);
+    }
      .sec-1{
             /* background-image: url(https://as2.ftcdn.net/v2/jpg/02/92/20/37/1000_F_292203735_CSsyqyS6A4Z9Czd4Msf7qZEhoxjpzZl1.jpg); */
             background-image: url(https://images.pexels.com/photos/326281/pexels-photo-326281.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1);

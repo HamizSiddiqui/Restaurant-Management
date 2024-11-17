@@ -19,10 +19,6 @@
     .navcolor {
         background-color: #004e92;
     }
-
-    .wrapper{ 
-        background-color: rgba(0, 0, 0, 0.566);
-      }
     </style>
 
 
@@ -59,7 +55,7 @@
             $sql="SELECT * FROM `categories`";
             $result=mysqli_query($conn,$sql);
             while($row=mysqli_fetch_assoc($result)){
-                echo '<button class="btn mt-3 btn-sm btn-outline-light py-2 px-4 mx-4" type="button">'. $row['Category_name'] .'</button>';
+                echo '<button class="btn mt-3 btn-secondary btn-sm btn-outline-light py-2 px-4 mx-4 fw-bold" type="button">'. $row['Category_name'] .'</button>';
             }
                     
         ?>
