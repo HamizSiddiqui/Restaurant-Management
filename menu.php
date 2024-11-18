@@ -155,22 +155,23 @@
                         $result2=mysqli_query($conn,$sql2);
                         $numRows = mysqli_num_rows($result2);
                         while($row2=mysqli_fetch_assoc($result2)){
-                            echo'
+                            echo '
                             <div class="col-12 col-md-3 d-inline-block width="80px">
-                                <div class="card"style="width: 16rem;">
+                                <div class="card" style="width: 16rem;">
                                     <img src="'.$row2['Item_image'].'" class="card-img-top" alt="...">
                                     <div class="card-body">
-                                    <h5 class="card-title fw-bold">'. $row2['Item_name'] .'</h5>
-                                    <p class="card-text ">'. substr($row2['Item_description'],0,80) .'...
-                                    <a href="#" class="see-more" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="'. $row2['Item_id'] .'" data-name="'. $row2 ['Item_name'] .'"data-description="'. $row2['Item_description'] .'"><br>See More</a></p>
-                                    <div class="counter-controls">
-                                        <button type="button" class="btn" onclick="updateQuantity(\''.$row2['Item_name'].'\', -1)">-</button>
-                                        <span id="quantity-'.$row2['Item_id'].'" class="counter">0</span>
-                                        <button type="button" class="btn" onclick="updateQuantity(\''.$row2['Item_name'].'\', 1)">+</button>
-                                    </div>
+                                        <h5 class="card-title fw-bold">'. $row2['Item_name'] .'</h5>
+                                        <p class="card-text">'. substr($row2['Item_description'], 0, 80) .'...
+                                        <a href="#" class="see-more" id="see-more" data-bs-toggle="modal" data-bs-target="#itemModal" data-id="'. $row2['Item_id'] .'" data-name="'. $row2 ['Item_name'] .'" data-description="'. $row2['Item_description'] .'"><br>See More</a></p>
+                                        <div class="counter-controls">
+                                            <button type="button" class="btn" onclick="updateQuantity(\''.$row2['Item_id'].'\', -1, \''.$row2['Item_name'].'\')">-</button>
+                                            <span id="quantity-'.$row2['Item_id'].'" class="counter">0</span>
+                                            <button type="button" class="btn" onclick="updateQuantity(\''.$row2['Item_id'].'\', 1, \''.$row2['Item_name'].'\')">+</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>';
+
                         }
                         if($numRows == 0){
                             echo '<h1 class="text-light mb-3" style="font-size: 20px;">No Results Found</h1>';
@@ -181,7 +182,27 @@
         </div>
     </section>
 
-    <!-- Basket Modal -->
+    <!-- See More Modal Starts -->
+    <div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Item Name</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalDescription">Item Description</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- See More Modal Ends -->
+
+
+    <!-- Basket Modal Starts-->
     <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -202,71 +223,87 @@
             </div>
         </div>
     </div>
+    <!-- Basket Modal Ends-->
+
 
     <script>
-        let cart = {}; // Object to store cart items and quantities
+    let cart = {}; // Object to store cart items and quantities
 
-        // Add sound notification
-        const notificationSound = new Audio('notification.mp3'); // Ensure you have a sound file named 'notification.mp3'
+// Play a notification sound
+const notificationSound = new Audio('notification.mp3'); // Ensure this file exists in your project
 
-        function updateQuantity(itemName, change) {
-            // Play notification sound when the item quantity changes
-            notificationSound.play();
+// Update item quantity
+function updateQuantity(itemId, change, itemName) {
+    notificationSound.play();
 
-            // If the item already exists in the cart, update the quantity
-            if (!cart[itemName]) {
-                cart[itemName] = { quantity: 0 };
-            }
+    // Initialize cart item if it doesn't exist
+    if (!cart[itemId]) {
+        cart[itemId] = { quantity: 0, name: itemName };
+    }
 
-            cart[itemName].quantity += change;
+    // Update quantity
+    cart[itemId].quantity += change;
 
-            if (cart[itemName].quantity <= 0) {
-                delete cart[itemName]; // Remove item if quantity is 0 or less
-            }
+    // Remove item if the quantity is zero or less
+    if (cart[itemId].quantity <= 0) {
+        delete cart[itemId];
+    }
 
-            // Update the quantity in the cart and the modal
-            const itemElement = document.getElementById("quantity-" + itemName);
-            if (itemElement) {
-                itemElement.innerText = cart[itemName]?.quantity || 0;
-            }
+    // Update the quantity display in the card
+    const itemElement = document.getElementById("quantity-" + itemId);
+    if (itemElement) {
+        itemElement.innerText = cart[itemId]?.quantity || 0;
+    }
 
-            // Update the counter in the modal
-            updateModal();
+    // Update the modal and cart counter
+    updateModal();
+    updateCartCounter();
+}
+
+// Update the cart modal content
+function updateModal() {
+    const cartItems = document.getElementById('cartItems');
+    const cartEmptyMessage = document.getElementById('cartEmptyMessage');
+    cartItems.innerHTML = ''; // Clear current cart content
+
+    if (Object.keys(cart).length === 0) {
+        cartEmptyMessage.style.display = 'block';
+    } else {
+        cartEmptyMessage.style.display = 'none';
+
+        // Populate cart modal with items
+        for (const itemId in cart) {
+            const listItem = document.createElement('li');
+            listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+            listItem.innerHTML = `
+                ${cart[itemId].name} (x${cart[itemId].quantity})
+                <span class="remove-btn" onclick="removeFromCart('${itemId}')">Remove</span>
+            `;
+            cartItems.appendChild(listItem);
         }
+    }
+}
 
-        function updateModal() {
-            const cartItems = document.getElementById('cartItems');
-            const cartEmptyMessage = document.getElementById('cartEmptyMessage');
-            cartItems.innerHTML = ''; // Clear current list
+// Remove an item from the cart
+function removeFromCart(itemId) {
+    delete cart[itemId]; // Remove from cart
+    updateModal(); // Update modal view
+    updateCartCounter(); // Update cart counter
+}
 
-            // If cart is empty, show the empty message
-            if (Object.keys(cart).length === 0) {
-                cartEmptyMessage.style.display = 'block';
-            } else {
-                cartEmptyMessage.style.display = 'none';
-                // Add each item in the cart as a list item
-                for (const itemName in cart) {
-                    const listItem = document.createElement('li');
-                    listItem.className = 'list-group-item';
-                    listItem.textContent = `${itemName} (x${cart[itemName].quantity})`;
+// Calculate total items and update the cart counter
+function updateCartCounter() {
+    const totalItems = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
+    const cartCounter = document.getElementById('cart-counter');
 
-                    // Create remove button
-                    const removeBtn = document.createElement('span');
-                    removeBtn.className = 'remove-btn';
-                    removeBtn.textContent = ' Remove';
-                    removeBtn.onclick = () => removeFromCart(itemName);
-                    listItem.appendChild(removeBtn);
-
-                    cartItems.appendChild(listItem);
-                }
-            }
-        }
-
-        function removeFromCart(itemName) {
-            delete cart[itemName]; // Remove item from cart
-            updateModal(); // Update modal view
-        }
-    </script>
+    if (totalItems > 0) {
+        cartCounter.style.display = 'flex'; // Show counter if items exist
+        cartCounter.innerText = totalItems;
+    } else {
+        cartCounter.style.display = 'none'; // Hide counter if no items
+    }
+}
+</script>
 
 </body>
 

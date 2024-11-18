@@ -74,11 +74,10 @@ echo '
                 <a class="nav-link active" aria-current="page" href="./contactus.html">Contact Us</a>
                 </li>
             </ul>
-            <div class="cart-container ">
-                <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#cartModal">
-                    <i class="fa-solid fa-cart-shopping icon">
-                        <div class="counter" id="counter">0</div>
-                    </i>
+            <!-- Cart Icon with Counter -->
+            <div class="cart-container">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cartModal">
+                    Cart <span id="cart-counter" class="badge bg-danger">0</span>
                 </button>
             </div>
         </div>

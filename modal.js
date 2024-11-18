@@ -1,21 +1,17 @@
-document.addEventListener('DOMContentLoaded', function() { //see more modal
+document.addEventListener('DOMContentLoaded', function () {
+    // Select all 'See More' links
     const seeMoreLinks = document.querySelectorAll('.see-more');
 
+    // Add click event listener to each link
     seeMoreLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            // Get data from clicked link
+        link.addEventListener('click', function () {
+            // Extract data attributes from the clicked link
             const itemName = this.getAttribute('data-name');
             const itemDescription = this.getAttribute('data-description');
 
-            // Populate the modal
-            document.getElementById('modal-title').innerText = itemName;
-            document.getElementById('modal-description').innerText = itemDescription;
+            // Update modal content
+            document.getElementById('modalTitle').innerText = itemName;
+            document.getElementById('modalDescription').innerText = itemDescription;
         });
     });
 });
-
-
-  
-
-
-
