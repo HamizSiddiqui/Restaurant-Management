@@ -55,7 +55,7 @@
             $sql="SELECT * FROM `categories`";
             $result=mysqli_query($conn,$sql);
             while($row=mysqli_fetch_assoc($result)){
-                echo '<button class="btn mt-3 btn-secondary btn-sm btn-outline-light py-2 px-4 mx-4 fw-bold" type="button">'. $row['Category_name'] .'</button>';
+                echo '<button class="btn mt-3 btn-sm btn-outline-light py-2 px-4 mx-4 fw-bold" type="button">'. $row['Category_name'] .'</button>';
             }
                     
         ?>
@@ -70,19 +70,19 @@
                 $sql="SELECT * FROM `categories`";
                 $result=mysqli_query($conn,$sql);
                 while($row=mysqli_fetch_assoc($result)){
-                    echo '<h1 class="text-light mb-3">'.$row['Category_name'].'</h1>';
+                    echo '<h1 class="text-light pt-3 mb-3">'.$row['Category_name'].'</h1>';
                     $category_id=$row['Category_id'];
                     $sql2="SELECT * FROM `items` where cat_id=$category_id";
                     $result2=mysqli_query($conn,$sql2);
                     $numRows = mysqli_num_rows($result2);
                     while($row2=mysqli_fetch_assoc($result2)){
                         echo'
-                        <div class="col-12 col-md-3 d-inline-block">
-                            <div class="card" style="width: 18rem;">
+                        <div class="col-12 col-md-3 d-inline-block width="80px">
+                            <div class="card " style="width: 16rem; "">
                                 <img src="'.$row2['Item_image'].'" class="card-img-top" alt="...">
                                 <div class="card-body">
                                 <h5 class="card-title fw-bold">'. $row2['Item_name'] .'</h5>
-                                <p class="card-text ">'. substr($row2['Item_description'],0,100) .'...
+                                <p class="card-text ">'. substr($row2['Item_description'],0,80) .'...
                                 <a href="#" class=" see-more" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="'. $row2['Item_id'] .'" data-name="'. $row2 ['Item_name'] .'"data-description="'. $row2['Item_description'] .'"><br>See More</a></p>
                                 <a href="#" class="btn btn-primary">Add to cart</a>
                                 </div>
@@ -90,7 +90,7 @@
                         </div>';
                     }
                     if($numRows == 0){
-                        echo '<h1 class="text-light mb-3">No Results Found</h1>';
+                        echo '<h1 class="text-light mb-3" style="font-size: 20px;">No Results Found</h1>';
                     }
                 }        
             ?>
