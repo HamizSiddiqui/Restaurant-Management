@@ -80,6 +80,7 @@ echo '
                     Cart <span id="cart-counter" class="badge bg-danger">0</span>
                 </button>
             </div>
+            
         </div>
     </div>
 </nav>
