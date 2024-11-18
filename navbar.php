@@ -9,8 +9,17 @@
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
-        } 
+        }
+            
+    .icon {
+        color: white; /* Change icon color */
+        margin-right: 8px; /* Add space between icon and text */
+        font-size: 1.2rem; /* Adjust icon size */
+    }
 </style>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+        
 
 <?php
 
@@ -43,6 +52,11 @@ echo '
                 <a class="nav-link active" aria-current="page" href="./contactus.html">Contact Us</a>
                 </li>
             </ul>
+                <div class="cart-container">
+                    <i class="fa-solid fa-cart-shopping icon">
+                        <span id="cart-counter">0</span>
+                    </i>
+                </div>
         </div>
     </div>
 </nav>

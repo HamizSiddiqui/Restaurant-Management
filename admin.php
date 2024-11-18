@@ -135,6 +135,7 @@ if (isset($error_message)) {
           <button type="button" class="btn text-light btn-outline-secondary">Reservation</button>
           <button type="button" class="btn text-light btn-outline-secondary">Orders</button>
           <button type="button" class="btn text-light btn-outline-secondary">Inventory</button>
+          <button type="button" class="btn text-light btn-outline-secondary">Staff</button>
         </div>              
       </div>
 
