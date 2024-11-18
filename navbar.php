@@ -3,18 +3,40 @@
     .wrapper{ 
         background-color: rgba(0, 0, 0, 0.534);
     }
-     .sec-1{
-            /* background-image: url(https://as2.ftcdn.net/v2/jpg/02/92/20/37/1000_F_292203735_CSsyqyS6A4Z9Czd4Msf7qZEhoxjpzZl1.jpg); */
-            background-image: url(https://images.pexels.com/photos/326281/pexels-photo-326281.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1);
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
+    .sec-1{
+        /* background-image: url(https://as2.ftcdn.net/v2/jpg/02/92/20/37/1000_F_292203735_CSsyqyS6A4Z9Czd4Msf7qZEhoxjpzZl1.jpg); */
+        background-image: url(https://images.pexels.com/photos/326281/pexels-photo-326281.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1);
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
             
+    .cart-container {
+      position: relative;
+      display: inline-block;
+    }
+
     .icon {
-        color: white; /* Change icon color */
-        margin-right: 8px; /* Add space between icon and text */
-        font-size: 1.2rem; /* Adjust icon size */
+      font-size: 1.8rem;
+      color: white;
+      position: relative;
+    }
+
+    .counter {
+      position: absolute;
+      top: -10px;
+      right: -10px;
+      background-color: #dc3545;
+      color: white;
+      font-size: 0.8rem;
+      font-weight: bold;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
     }
 </style>
 
@@ -52,15 +74,16 @@ echo '
                 <a class="nav-link active" aria-current="page" href="./contactus.html">Contact Us</a>
                 </li>
             </ul>
-                <div class="cart-container">
+            <div class="cart-container ">
+                <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#cartModal">
                     <i class="fa-solid fa-cart-shopping icon">
-                        <span id="cart-counter">0</span>
+                        <div class="counter" id="counter">0</div>
                     </i>
-                </div>
+                </button>
+            </div>
         </div>
     </div>
 </nav>
 ';
-
 
 ?>
