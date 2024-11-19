@@ -162,11 +162,16 @@
                                     <div class="card-body">
                                         <h5 class="card-title fw-bold">'. $row2['Item_name'] .'</h5>
                                         <p class="card-text">'. substr($row2['Item_description'], 0, 80) .'...
-                                        <a href="#" class="see-more" id="see-more" data-bs-toggle="modal" data-bs-target="#itemModal" data-id="'. $row2['Item_id'] .'" data-name="'. $row2 ['Item_name'] .'" data-description="'. $row2['Item_description'] .'"><br>See More</a></p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <a href="#" class="see-more" id="see-more" data-bs-toggle="modal" data-bs-target="#exampleModal" 
+                                                data-id="'. $row2['Item_id'] .'" data-name="'. $row2['Item_name'] .'" 
+                                                data-description="'. $row2['Item_description'] .'">See More</a>
+                                            <h6 class="mb-0">Price: '.$row2['Price'].'</h6>
+                                        </div>
                                         <div class="counter-controls">
-                                            <button type="button" class="btn" onclick="updateQuantity(\''.$row2['Item_id'].'\', -1, \''.$row2['Item_name'].'\')">-</button>
+                                            <button type="button" class="btn btn-danger mx-4 px-4"  onclick="updateQuantity(\''.$row2['Item_id'].'\', -1, \''.$row2['Item_name'].'\')" style="font-size: 30px height: 20px">-</button>
                                             <span id="quantity-'.$row2['Item_id'].'" class="counter">0</span>
-                                            <button type="button" class="btn" onclick="updateQuantity(\''.$row2['Item_id'].'\', 1, \''.$row2['Item_name'].'\')">+</button>
+                                            <button type="button" class="btn btn-success px-4" onclick="updateQuantity(\''.$row2['Item_id'].'\', 1, \''.$row2['Item_name'].'\')" style="font-size: 30px height: 20px">+</button>
                                         </div>
                                     </div>
                                 </div>
@@ -182,50 +187,58 @@
         </div>
     </section>
 
-    <!-- See More Modal Starts -->
-    <div class="modal fade" id="itemModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalTitle">Item Name</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- See more Modal Starts -->
+    <?php include 'cardmodal.php';?>
+    <script src="modal.js"></script>
+    <!-- See more Modal Ends -->
+
+
+    <!-- Basket Modal Starts -->
+<div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cartModalLabel">Shopping Cart</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Cart Items List -->
+                <ul id="cartItems" class="list-group mb-3">
+                    <!-- Cart items will be dynamically added here -->
+                </ul>
+                <p id="cartEmptyMessage" class="text-muted">Your cart is empty. Add items to see them here.</p>
+
+                <!-- Total Price Section -->
+                <div class="d-flex justify-content-between">
+                    <strong>Total:</strong>
+                    <span id="cartTotalPrice">0.00</span> USD
                 </div>
-                <div class="modal-body">
-                    <p id="modalDescription">Item Description</p>
-                </div>
-                <div class="modal-footer">
+            </div>
+            <div class="modal-footer">
+                <!-- Hidden Form to Send Cart Data -->
+                <form id="cartForm" method="POST" action="order.php">
+                    <input type="hidden" name="cartData" id="cartDataInput">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+                    <button type="button" class="btn btn-primary" id="checkoutButton" onclick="submitCart()">Go to Checkout</button>
+                </form>
             </div>
         </div>
     </div>
-    <!-- See More Modal Ends -->
+</div>
+<!-- Basket Modal Ends -->
 
 
-    <!-- Basket Modal Starts-->
-    <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="cartModalLabel">Shopping Cart</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <ul id="cartItems" class="cart-items">
-                        <!-- Cart items will be dynamically added here -->
-                    </ul>
-                    <p id="cartEmptyMessage">Your cart is empty. Add items to see them here.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Go to Checkout</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Basket Modal Ends-->
+    <!-- Checkout Button Starts -->
+    <!-- <script>
+        function submitCart() {
+            const cartDataInput = document.getElementById('cartDataInput');
+            cartDataInput.value = JSON.stringify(cart); // Serialize cart object as a JSON string
+            document.getElementById('cartForm').submit(); // Submit the form to order.php
+        }
+    </script> -->
+    <!-- Checkout Button Ends-->
 
-
+    <!-- Card Java Starts -->
     <script>
     let cart = {}; // Object to store cart items and quantities
 
@@ -233,12 +246,12 @@
 const notificationSound = new Audio('notification.mp3'); // Ensure this file exists in your project
 
 // Update item quantity
-function updateQuantity(itemId, change, itemName) {
+function updateQuantity(itemId, change, itemName, price) {
     notificationSound.play();
 
     // Initialize cart item if it doesn't exist
     if (!cart[itemId]) {
-        cart[itemId] = { quantity: 0, name: itemName };
+        cart[itemId] = { quantity: 0, name: itemName, price: price };
     }
 
     // Update quantity
@@ -249,7 +262,7 @@ function updateQuantity(itemId, change, itemName) {
         delete cart[itemId];
     }
 
-    // Update the quantity display in the card
+    // Update the quantity display on the card
     const itemElement = document.getElementById("quantity-" + itemId);
     if (itemElement) {
         itemElement.innerText = cart[itemId]?.quantity || 0;
@@ -264,29 +277,44 @@ function updateQuantity(itemId, change, itemName) {
 function updateModal() {
     const cartItems = document.getElementById('cartItems');
     const cartEmptyMessage = document.getElementById('cartEmptyMessage');
+    const cartTotalPriceElement = document.getElementById('cartTotalPrice');
+    let totalPrice = 0;
+
     cartItems.innerHTML = ''; // Clear current cart content
 
     if (Object.keys(cart).length === 0) {
         cartEmptyMessage.style.display = 'block';
+        cartTotalPriceElement.innerText = '0.00'; // Reset total price
     } else {
         cartEmptyMessage.style.display = 'none';
 
         // Populate cart modal with items
         for (const itemId in cart) {
+            const itemTotal = cart[itemId].price * cart[itemId].quantity;
+            totalPrice += itemTotal;
+
             const listItem = document.createElement('li');
             listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
             listItem.innerHTML = `
-                ${cart[itemId].name} (x${cart[itemId].quantity})
-                <span class="remove-btn" onclick="removeFromCart('${itemId}')">Remove</span>
+                <div>
+                    <strong>${cart[itemId].name}</strong><br>
+                    $${cart[itemId].price} x ${cart[itemId].quantity}
+                </div>
+                <div>
+                    <span>$${itemTotal.toFixed(2)}</span>
+                    <button class="btn btn-sm btn-danger ms-2" onclick="removeFromCart('${itemId}')">Remove</button>
+                </div>
             `;
             cartItems.appendChild(listItem);
         }
+
+        cartTotalPriceElement.innerText = totalPrice.toFixed(2); // Update total price
     }
 }
 
 // Remove an item from the cart
 function removeFromCart(itemId) {
-    delete cart[itemId]; // Remove from cart
+    delete cart[itemId]; // Remove item from cart
     updateModal(); // Update modal view
     updateCartCounter(); // Update cart counter
 }
@@ -303,7 +331,17 @@ function updateCartCounter() {
         cartCounter.style.display = 'none'; // Hide counter if no items
     }
 }
+
+// Submit the cart for checkout
+function submitCart() {
+    const cartDataInput = document.getElementById('cartDataInput');
+    cartDataInput.value = JSON.stringify(cart); // Serialize cart object as a JSON string
+    document.getElementById('cartForm').submit(); // Submit the form to order.php
+}
+
 </script>
+<!-- Card Java Ends -->
+
 
 </body>
 

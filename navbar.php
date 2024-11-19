@@ -61,23 +61,26 @@ echo '
                     <a class="nav-link active" aria-current="page" href="./index.php">Home</a>
                 </li>
                 <li class="nav-item px-3"></li>
-                <a class="nav-link active" aria-current="page" href="./menu.php">Menu</a>
+                    <a class="nav-link active" aria-current="page" href="./menu.php">Menu</a>
                 </li>
                 <li class="nav-item px-3"></li>
-                <a class="nav-link active" aria-current="page" href="./reservation.php">Reservation</a>
+                    <a class="nav-link active" aria-current="page" href="./reservation.php">Reservation</a>
                 </li>
                 <li class="nav-item px-3"></li>
-                <a class="nav-link active" aria-current="page" href="./aboutus.html">About Us</a>
+                    <a class="nav-link active" aria-current="page" href="./aboutus.html">About Us</a>
                 </li>
                 </li>
                 <li class="nav-item px-3"></li>
-                <a class="nav-link active" aria-current="page" href="./contactus.html">Contact Us</a>
+                    <a class="nav-link active" aria-current="page" href="./contactus.html">Contact Us</a>
+                </li>
+                <li class="nav-item px-3"></li>
+                    <a class="nav-link active" aria-current="page" href="./order_status.php">Order Status</a>
                 </li>
             </ul>
             <!-- Cart Icon with Counter -->
             <div class="cart-container">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cartModal">
-                    Cart <span id="cart-counter" class="badge bg-danger">0</span>
+                <button type="button" class="btn btn-primary  text-light fw-bolder" data-bs-toggle="modal" data-bs-target="#cartModal">
+                <i class="fa-solid fa-cart-shopping" style="font-size: 20px"></i> <span id="cart-counter" class="badge bg-danger">0</span>
                 </button>
             </div>
             

@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', function () {
             const itemDescription = this.getAttribute('data-description');
 
             // Update modal content
-            document.getElementById('modalTitle').innerText = itemName;
-            document.getElementById('modalDescription').innerText = itemDescription;
+            document.getElementById('modal-title').innerText = itemName;
+            document.getElementById('modal-description').innerText = itemDescription;
         });
     });
 });
