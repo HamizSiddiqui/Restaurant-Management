@@ -108,6 +108,13 @@
             font-size: 1.5rem;
             font-weight: bold;
         }
+        .sticky-navbar {
+            position: sticky;
+            top: 80px; /* Adjust this value based on where you want it to stick relative to the viewport */
+            z-index: 1030; /* Ensure it appears above other content */
+            background-color: dark; /* Set background color if needed */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow for better visibility */
+        }
 
     </style>
 
@@ -128,9 +135,9 @@
     </div>
     <!-- navbar end -->
 
-    <!-- Cards Start -->
+    <!-- Category Slider Starts--> 
     <section class="sec-m2 bgcolor" style="min-height: 600px;">
-        <nav class="navbar">
+        <nav class="navbar sticky-navbar">
             <form class="container-fluid justify-content-center ">
 
                 <?php 
@@ -142,7 +149,10 @@
                 ?>
             </form>
         </nav>
+        <!-- Category Slider Ends-->            
 
+
+        <!-- Cards Start -->
         <div class="container">
             <div class="row pt-5">
                 <?php 
@@ -169,9 +179,9 @@
                                             <h6 class="mb-0">Price: '.$row2['Price'].'</h6>
                                         </div>
                                         <div class="counter-controls">
-                                            <button type="button" class="btn btn-danger mx-4 px-4"  onclick="updateQuantity(\''.$row2['Item_id'].'\', -1, \''.$row2['Item_name'].'\')" style="font-size: 30px height: 20px">-</button>
+                                            <button type="button" class="btn btn-danger mx-4 px-4"  onclick="updateQuantity(\''.$row2['Item_id'].'\', -1, \''.$row2['Item_name'].'\',\''.$row2['Price'].'\')" style="font-size: 30px height: 20px">-</button>
                                             <span id="quantity-'.$row2['Item_id'].'" class="counter">0</span>
-                                            <button type="button" class="btn btn-success px-4" onclick="updateQuantity(\''.$row2['Item_id'].'\', 1, \''.$row2['Item_name'].'\')" style="font-size: 30px height: 20px">+</button>
+                                            <button type="button" class="btn btn-success px-4" onclick="updateQuantity(\''.$row2['Item_id'].'\', 1, \''.$row2['Item_name'].'\',\''.$row2['Price'].'\')" style="font-size: 30px height: 20px">+</button>
                                         </div>
                                     </div>
                                 </div>
@@ -193,7 +203,7 @@
     <!-- See more Modal Ends -->
 
 
-    <!-- Basket Modal Starts -->
+<!-- Basket Modal Starts -->
 <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -210,14 +220,63 @@
 
                 <!-- Total Price Section -->
                 <div class="d-flex justify-content-between">
-                    <strong>Total:</strong>
-                    <span id="cartTotalPrice">0.00</span> USD
+                    <strong>Subtotal:</strong>
+                    <span id="cartSubtotalPrice">0.00</span> PKR
                 </div>
+                <div class="d-flex justify-content-between">
+                    <strong>GST (13%):</strong>
+                    <span id="cartGST">0.00</span> PKR
+                </div>
+                <br>
+                <div class="d-flex justify-content-between">
+                    <strong>Total (incl. GST):</strong>
+                    <span id="cartTotalPrice">0.00</span> PKR
+                </div>
+
+                <!-- Delivery Method Section -->
+                <div class="form-group mt-3">
+                    <label for="deliveryMethod">Choose Delivery Method</label>
+                    <select id="deliveryMethod" class="form-select" onchange="updateDeliveryCharges()">
+                        <option value="pickup">Pickup</option>
+                        <option value="delivery">Delivery</option>
+                    </select>
+                </div>
+
+                <!-- Payment Method Section -->
+                <div class="form-group mt-3">
+                    <label for="paymentMethod">Choose Payment Method</label>
+                    <select id="paymentMethod" class="form-select" onchange="togglePaymentDetails()">
+                        <option value="cod">Cash on Delivery</option>
+                        <option value="online">Online Payment</option>
+                    </select>
+                </div>
+
+                <!-- Online Payment Details (Hidden by Default) -->
+                <div id="onlinePaymentDetails" class="mt-3" style="display:none;">
+                    <h6>Online Payment Details</h6>
+                    <div class="mb-3">
+                        <label for="cardNumber" class="form-label">Card Number</label>
+                        <input type="text" id="cardNumber" class="form-control" placeholder="Enter card number" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="cardExpiry" class="form-label">Expiry Date</label>
+                        <input type="text" id="cardExpiry" class="form-control" placeholder="MM/YY" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="cardCVV" class="form-label">CVV</label>
+                        <input type="text" id="cardCVV" class="form-control" placeholder="Enter CVV" />
+                    </div>
+                </div>
+
             </div>
             <div class="modal-footer">
                 <!-- Hidden Form to Send Cart Data -->
                 <form id="cartForm" method="POST" action="order.php">
                     <input type="hidden" name="cartData" id="cartDataInput">
+                    <input type="hidden" name="deliveryMethod" id="deliveryMethodInput">
+                    <input type="hidden" name="paymentMethod" id="paymentMethodInput">
+                    <input type="hidden" name="paymentDetails" id="paymentDetailsInput">
+
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" id="checkoutButton" onclick="submitCart()">Go to Checkout</button>
                 </form>
@@ -225,6 +284,8 @@
         </div>
     </div>
 </div>
+<!-- Basket Modal Ends -->
+
 <!-- Basket Modal Ends -->
 
 
@@ -241,11 +302,9 @@
     <!-- Card Java Starts -->
     <script>
     let cart = {}; // Object to store cart items and quantities
-
-// Play a notification sound
 const notificationSound = new Audio('notification.mp3'); // Ensure this file exists in your project
 
-// Update item quantity
+// Update item quantity function
 function updateQuantity(itemId, change, itemName, price) {
     notificationSound.play();
 
@@ -278,6 +337,8 @@ function updateModal() {
     const cartItems = document.getElementById('cartItems');
     const cartEmptyMessage = document.getElementById('cartEmptyMessage');
     const cartTotalPriceElement = document.getElementById('cartTotalPrice');
+    const cartGSTElement = document.getElementById('cartGST'); // Element for GST
+    const cartSubtotalPriceElement = document.getElementById('cartSubtotalPrice'); // Element for subtotal
     let totalPrice = 0;
 
     cartItems.innerHTML = ''; // Clear current cart content
@@ -285,6 +346,8 @@ function updateModal() {
     if (Object.keys(cart).length === 0) {
         cartEmptyMessage.style.display = 'block';
         cartTotalPriceElement.innerText = '0.00'; // Reset total price
+        cartGSTElement.innerText = '0.00'; // Reset GST
+        cartSubtotalPriceElement.innerText = '0.00'; // Reset subtotal
     } else {
         cartEmptyMessage.style.display = 'none';
 
@@ -298,47 +361,98 @@ function updateModal() {
             listItem.innerHTML = `
                 <div>
                     <strong>${cart[itemId].name}</strong><br>
-                    $${cart[itemId].price} x ${cart[itemId].quantity}
+                    Rs.${cart[itemId].price} x ${cart[itemId].quantity}
                 </div>
                 <div>
-                    <span>$${itemTotal.toFixed(2)}</span>
+                    <span>Rs.${itemTotal.toFixed(2)}</span>
                     <button class="btn btn-sm btn-danger ms-2" onclick="removeFromCart('${itemId}')">Remove</button>
                 </div>
             `;
             cartItems.appendChild(listItem);
         }
 
-        cartTotalPriceElement.innerText = totalPrice.toFixed(2); // Update total price
+        // Calculate GST (13%)
+        const gst = totalPrice * 0.13;
+        const totalWithGST = totalPrice + gst;
+
+        // Update the subtotal, GST, and total price
+        cartSubtotalPriceElement.innerText = totalPrice.toFixed(2); // Subtotal price
+        cartGSTElement.innerText = gst.toFixed(2); // GST 13%
+        cartTotalPriceElement.innerText = totalWithGST.toFixed(2); // Total price with GST
     }
 }
 
-// Remove an item from the cart
-function removeFromCart(itemId) {
-    delete cart[itemId]; // Remove item from cart
-    updateModal(); // Update modal view
-    updateCartCounter(); // Update cart counter
+// Update delivery charges based on selected method
+function updateDeliveryCharges() {
+    const deliveryMethod = document.getElementById('deliveryMethod').value;
+    const cartTotalPriceElement = document.getElementById('cartTotalPrice');
+    const cartGSTElement = document.getElementById('cartGST'); // Element for GST
+    const cartSubtotalPriceElement = document.getElementById('cartSubtotalPrice'); // Element for subtotal
+    let totalPrice = parseFloat(cartSubtotalPriceElement.innerText);
+
+    // If delivery is selected, add delivery charges (e.g., 100 PKR)
+    if (deliveryMethod === 'delivery') {
+        totalPrice += 100; // Delivery charges
+    }
+
+    // Calculate GST (13%)
+    const gst = totalPrice * 0.13;
+    const totalWithGST = totalPrice + gst;
+
+    // Update the total price and GST
+    cartGSTElement.innerText = gst.toFixed(2);
+    cartTotalPriceElement.innerText = totalWithGST.toFixed(2);
 }
 
-// Calculate total items and update the cart counter
-function updateCartCounter() {
-    const totalItems = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
-    const cartCounter = document.getElementById('cart-counter');
+// Toggle visibility of online payment details
+function togglePaymentDetails() {
+    const paymentMethod = document.getElementById('paymentMethod').value;
+    const onlinePaymentDetails = document.getElementById('onlinePaymentDetails');
 
-    if (totalItems > 0) {
-        cartCounter.style.display = 'flex'; // Show counter if items exist
-        cartCounter.innerText = totalItems;
+    if (paymentMethod === 'online') {
+        onlinePaymentDetails.style.display = 'block';
     } else {
-        cartCounter.style.display = 'none'; // Hide counter if no items
+        onlinePaymentDetails.style.display = 'none';
     }
 }
 
 // Submit the cart for checkout
 function submitCart() {
     const cartDataInput = document.getElementById('cartDataInput');
-    cartDataInput.value = JSON.stringify(cart); // Serialize cart object as a JSON string
-    document.getElementById('cartForm').submit(); // Submit the form to order.php
-}
+    const deliveryMethodInput = document.getElementById('deliveryMethodInput');
+    const paymentMethodInput = document.getElementById('paymentMethodInput');
+    const paymentDetailsInput = document.getElementById('paymentDetailsInput');
 
+    cartDataInput.value = JSON.stringify(cart); // Serialize cart object as a string
+    deliveryMethodInput.value = document.getElementById('deliveryMethod').value;
+    paymentMethodInput.value = document.getElementById('paymentMethod').value;
+
+    if (paymentMethodInput.value === 'online') {
+        const cardDetails = {
+            cardNumber: document.getElementById('cardNumber').value,
+            cardExpiry: document.getElementById('cardExpiry').value,
+            cardCVV: document.getElementById('cardCVV').value
+        };
+        paymentDetailsInput.value = JSON.stringify(cardDetails); // Serialize card details as a string
+    } else {
+        paymentDetailsInput.value = ''; // No payment details for COD
+    }
+
+    // Optionally, you can send this data to the server or process it here
+    // Example: Submit form to your server
+    document.getElementById('cartForm').submit();
+}
+function updateCartCounter() {
+        const totalItems = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
+        const cartCounter = document.getElementById('cart-counter');
+
+        if (totalItems > 0) {
+            cartCounter.style.display = 'flex'; // Show counter if items exist
+            cartCounter.innerText = totalItems;
+        } else {
+            cartCounter.style.display = 'none'; // Hide counter if no items
+        }
+    }
 </script>
 <!-- Card Java Ends -->
 
