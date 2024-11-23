@@ -212,6 +212,14 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <!-- Delivery Method Section -->
+                <div class="form-group mt-2 mb-3">
+                    <label for="deliveryMethod">Choose Delivery Method</label>
+                    <select id="deliveryMethod" class="form-select" onchange="updateDeliveryCharges()">
+                        <option value="pickup">Pickup</option>
+                        <option value="delivery">Delivery</option>
+                    </select>
+                </div>
                 <!-- Cart Items List -->
                 <ul id="cartItems" class="list-group mb-3">
                     <!-- Cart items will be dynamically added here -->
@@ -227,20 +235,16 @@
                     <strong>GST (13%):</strong>
                     <span id="cartGST">0.00</span> PKR
                 </div>
+                <div class="d-flex justify-content-between">
+                    <strong>Delivery Fee:</strong>
+                    <span id="del">0.00</span> PKR
+                </div>
                 <br>
                 <div class="d-flex justify-content-between">
                     <strong>Total (incl. GST):</strong>
                     <span id="cartTotalPrice">0.00</span> PKR
                 </div>
 
-                <!-- Delivery Method Section -->
-                <div class="form-group mt-3">
-                    <label for="deliveryMethod">Choose Delivery Method</label>
-                    <select id="deliveryMethod" class="form-select" onchange="updateDeliveryCharges()">
-                        <option value="pickup">Pickup</option>
-                        <option value="delivery">Delivery</option>
-                    </select>
-                </div>
 
                 <!-- Payment Method Section -->
                 <div class="form-group mt-3">
