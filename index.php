@@ -35,6 +35,8 @@
 
 <body> 
 
+<?php include '_dbconnect.php'; ?>
+
 <!-- Section 1 start -->
  <section class="sec-1">
   <div class="wrapper">

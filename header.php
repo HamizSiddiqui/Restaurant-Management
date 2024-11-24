@@ -1,7 +1,5 @@
 <?php
 
-session_start();
-
 
 
 if(isset($_GET['signupsuccess']) && $_GET['signupsuccess'] == "true"){

@@ -125,7 +125,9 @@
 
 <body>
 
+    
     <?php include '_dbconnect.php';?>
+    
 
     <!-- navbar start -->
     <div class="container-fluid sec-1 ">
@@ -282,14 +284,12 @@
                     <input type="hidden" name="paymentDetails" id="paymentDetailsInput">
 
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="checkoutButton" onclick="submitCart()">Go to Checkout</button>
+                    <button type="button" class="btn btn-primary" id="confirmOrderButton" onclick="submitCart()">Confirm Order</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
-<!-- Basket Modal Ends -->
-
 <!-- Basket Modal Ends -->
 
 
@@ -389,24 +389,28 @@ function updateModal() {
 // Update delivery charges based on selected method
 function updateDeliveryCharges() {
     const deliveryMethod = document.getElementById('deliveryMethod').value;
+    const deliveryFeeElement = document.getElementById('del');
+    const cartSubtotalPriceElement = document.getElementById('cartSubtotalPrice');
+    const cartGSTElement = document.getElementById('cartGST');
     const cartTotalPriceElement = document.getElementById('cartTotalPrice');
-    const cartGSTElement = document.getElementById('cartGST'); // Element for GST
-    const cartSubtotalPriceElement = document.getElementById('cartSubtotalPrice'); // Element for subtotal
-    let totalPrice = parseFloat(cartSubtotalPriceElement.innerText);
 
-    // If delivery is selected, add delivery charges (e.g., 100 PKR)
+    let subtotal = parseFloat(cartSubtotalPriceElement.innerText) || 0;
+    let gst = subtotal * 0.13;
+    let deliveryFee = 0;
+
     if (deliveryMethod === 'delivery') {
-        totalPrice += 100; // Delivery charges
+        deliveryFee = 100; // Set delivery charges (e.g., 100 PKR)
     }
 
-    // Calculate GST (13%)
-    const gst = totalPrice * 0.13;
-    const totalWithGST = totalPrice + gst;
+    // Update delivery fee in the modal
+    deliveryFeeElement.innerText = deliveryFee.toFixed(2);
 
-    // Update the total price and GST
+    // Update total price
+    const total = subtotal + gst + deliveryFee;
     cartGSTElement.innerText = gst.toFixed(2);
-    cartTotalPriceElement.innerText = totalWithGST.toFixed(2);
+    cartTotalPriceElement.innerText = total.toFixed(2);
 }
+
 
 // Toggle visibility of online payment details
 function togglePaymentDetails() {
@@ -422,30 +426,57 @@ function togglePaymentDetails() {
 
 // Submit the cart for checkout
 function submitCart() {
-    const cartDataInput = document.getElementById('cartDataInput');
-    const deliveryMethodInput = document.getElementById('deliveryMethodInput');
-    const paymentMethodInput = document.getElementById('paymentMethodInput');
-    const paymentDetailsInput = document.getElementById('paymentDetailsInput');
+    const cartDataInput = JSON.stringify(cart); // Serialize cart object
+    const deliveryMethod = document.getElementById('deliveryMethod').value;
+    const paymentMethod = document.getElementById('paymentMethod').value;
 
-    cartDataInput.value = JSON.stringify(cart); // Serialize cart object as a string
-    deliveryMethodInput.value = document.getElementById('deliveryMethod').value;
-    paymentMethodInput.value = document.getElementById('paymentMethod').value;
-
-    if (paymentMethodInput.value === 'online') {
-        const cardDetails = {
+    let paymentDetails = {};
+    if (paymentMethod === 'online') {
+        paymentDetails = {
             cardNumber: document.getElementById('cardNumber').value,
             cardExpiry: document.getElementById('cardExpiry').value,
             cardCVV: document.getElementById('cardCVV').value
         };
-        paymentDetailsInput.value = JSON.stringify(cardDetails); // Serialize card details as a string
-    } else {
-        paymentDetailsInput.value = ''; // No payment details for COD
     }
 
-    // Optionally, you can send this data to the server or process it here
-    // Example: Submit form to your server
-    document.getElementById('cartForm').submit();
+    // Prepare data to send
+    const orderData = {
+        cartData: cartDataInput,
+        deliveryMethod: deliveryMethod,
+        paymentMethod: paymentMethod,
+        paymentDetails: paymentDetails
+    };
+
+    // Send data to server using Fetch API
+    fetch('order.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json' // Send JSON data
+        },
+        body: JSON.stringify(orderData) // Serialize order data to JSON
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json(); // Parse JSON response from the server
+    })
+    .then(data => {
+        console.log(data); // Log server response for debugging
+        if (data.status === 'success') {
+            alert(data.message); // Show success message
+        } else {
+            alert(data.message); // Show error message
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while placing the order.');
+    });
 }
+
+
+
 function updateCartCounter() {
         const totalItems = Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
         const cartCounter = document.getElementById('cart-counter');
@@ -456,7 +487,7 @@ function updateCartCounter() {
         } else {
             cartCounter.style.display = 'none'; // Hide counter if no items
         }
-    }
+    }   
 </script>
 <!-- Card Java Ends -->
 
